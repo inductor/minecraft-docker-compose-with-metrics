@@ -10,7 +10,7 @@ services:
       - "25565:25565"
       - "8123:8123"
     volumes:
-      - "/home/kela/data:/data"
+      - "/home/ubuntu/minecraft/data:/data:/data"
     environment:
       EULA: "TRUE"
       MEMORY: "6G"
