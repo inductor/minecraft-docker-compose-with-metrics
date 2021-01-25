@@ -1,0 +1,61 @@
+version: '3'
+
+services:
+  minecraft:
+    image: itzg/minecraft-server
+    user: "1000:1000"
+    stdin_open: true
+    tty: true
+    ports:
+      - "25565:25565"
+      - "8123:8123"
+    volumes:
+      - "/home/kela/data:/data"
+    environment:
+      EULA: "TRUE"
+      MEMORY: "6G"
+      TYPE: "SPIGOT"
+    restart: always
+    logging:
+      driver: loki
+      options:
+        loki-url: http://localhost:3100/loki/api/v1/push
+    depends_on:
+      - loki
+
+  loki:
+    image: grafana/loki
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - loki-storage:/loki
+    ports:
+      - "3100:3100"
+
+  grafana:
+    image: grafana/grafana
+    volumes:
+      - ./grafana:/etc/grafana
+      - grafana-storage:/var/lib/grafana
+    ports:
+      - 3000:3000
+    restart: always
+    depends_on:
+      - loki
+    environment:
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-piechart-panel
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus:/etc/prometheus
+    command: "--config.file=/etc/prometheus/prometheus.yaml"
+    restart: always
+
+  exporter:
+    image: prom/node-exporter
+    container_name: node-exporter
+    restart: always
+
+volumes:
+  grafana-storage:
+  loki-storage:
