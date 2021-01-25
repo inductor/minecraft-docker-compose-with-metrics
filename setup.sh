@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if ! command -v COMMAND &> /dev/null
+if ! command -v docker &> /dev/null
 then
     echo "Docker not found, installing..."
     sudo apt-get update
