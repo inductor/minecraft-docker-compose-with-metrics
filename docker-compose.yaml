@@ -15,7 +15,6 @@ services:
       EULA: "TRUE"
       MEMORY: "6G"
       TYPE: "SPIGOT"
-      VERSION: "1.16"
     restart: always
     logging:
       driver: loki
